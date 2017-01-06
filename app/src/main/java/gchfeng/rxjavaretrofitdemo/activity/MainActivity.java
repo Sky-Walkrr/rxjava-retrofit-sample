@@ -7,17 +7,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gchfeng.rxjavaretrofitdemo.R;
 import gchfeng.rxjavaretrofitdemo.entity.MovieEntity;
 import gchfeng.rxjavaretrofitdemo.request.MovieDataService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import gchfeng.rxjavaretrofitdemo.utils.HttpUtil;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by gchfeng on 2017/1/5.
@@ -44,34 +47,81 @@ public class MainActivity extends Activity {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getData();
+//                getData();
+                requestData();
             }
         });
     }
 
-    private String baseUrl = "https://api.douban.com/v2/movie/";
-
-    private void getData() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MovieDataService movieDataService = retrofit.create(MovieDataService.class);
-        Call<MovieEntity> call = movieDataService.getTopMovie(0,10);
-        call.enqueue(new Callback<MovieEntity>() {
+    private void requestData() {
+        Subscriber<MovieEntity> subscriber = new Subscriber<MovieEntity>() {
             @Override
-            public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
-                MovieEntity movieEntity = response.body();
+            public void onCompleted() {
+                Toast.makeText(MainActivity.this, "onComplete", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "requestOnFailure", e);
+            }
+
+            @Override
+            public void onNext(MovieEntity movieEntity) {
                 if (movieEntity != null) {
                     tvTest.setText(TextUtils.isEmpty(movieEntity.getTitle()) ? "" : movieEntity.getTitle());
                 }
             }
+        };
+        HttpUtil.getInstance().getTopMovie(subscriber,0,10);
+    }
 
-            @Override
-            public void onFailure(Call<MovieEntity> call, Throwable t) {
-                Log.e(TAG,"requestOnFailure",t);
-            }
-        });
+    private void getData() {
+
+        String baseUrl = "https://api.douban.com/v2/movie/";
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
+        MovieDataService movieDataService = retrofit.create(MovieDataService.class);
+//        Call<MovieEntity> call = movieDataService.getTopMovie(0,10);
+//        call.enqueue(new Callback<MovieEntity>() {
+//            @Override
+//            public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
+//                MovieEntity movieEntity = response.body();
+//                if (movieEntity != null) {
+//                    tvTest.setText(TextUtils.isEmpty(movieEntity.getTitle()) ? "" : movieEntity.getTitle());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MovieEntity> call, Throwable t) {
+//                Log.e(TAG,"requestOnFailure",t);
+//            }
+//        });
+
+        movieDataService.getTopMovie(0,10)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<MovieEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        Toast.makeText(MainActivity.this, "onComplete", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "requestOnFailure", e);
+                    }
+
+                    @Override
+                    public void onNext(MovieEntity movieEntity) {
+                        if (movieEntity != null) {
+                            tvTest.setText(TextUtils.isEmpty(movieEntity.getTitle()) ? "" : movieEntity.getTitle());
+                        }
+                    }
+                });
     }
 }
