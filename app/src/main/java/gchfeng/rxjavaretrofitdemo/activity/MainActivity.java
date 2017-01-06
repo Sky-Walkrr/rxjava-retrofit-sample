@@ -9,10 +9,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gchfeng.rxjavaretrofitdemo.R;
 import gchfeng.rxjavaretrofitdemo.entity.MovieEntity;
+import gchfeng.rxjavaretrofitdemo.entity.SubjectsEntity;
 import gchfeng.rxjavaretrofitdemo.request.MovieDataService;
 import gchfeng.rxjavaretrofitdemo.utils.HttpUtil;
 import retrofit2.Retrofit;
@@ -20,6 +23,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -47,8 +51,8 @@ public class MainActivity extends Activity {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                getData();
-                requestData();
+                getData();
+//                requestData();
             }
         });
     }
@@ -85,7 +89,7 @@ public class MainActivity extends Activity {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
-        MovieDataService movieDataService = retrofit.create(MovieDataService.class);
+        final MovieDataService movieDataService = retrofit.create(MovieDataService.class);
 //        Call<MovieEntity> call = movieDataService.getTopMovie(0,10);
 //        call.enqueue(new Callback<MovieEntity>() {
 //            @Override
@@ -102,10 +106,33 @@ public class MainActivity extends Activity {
 //            }
 //        });
 
+//        movieDataService.getTopMovie(0,10)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<MovieEntity>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        Toast.makeText(MainActivity.this, "onComplete", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e(TAG, "requestOnFailure", e);
+//                    }
+//
+//                    @Override
+//                    public void onNext(MovieEntity movieEntity) {
+//                        if (movieEntity != null) {
+//                            tvTest.setText(TextUtils.isEmpty(movieEntity.getTitle()) ? "" : movieEntity.getTitle());
+//                        }
+//                    }
+//                });
+
         movieDataService.getTopMovie(0,10)
+                .map(new HttpFunc<MovieEntity>())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<MovieEntity>() {
+                .subscribe(new Subscriber<List<SubjectsEntity>>() {
                     @Override
                     public void onCompleted() {
                         Toast.makeText(MainActivity.this, "onComplete", Toast.LENGTH_SHORT).show();
@@ -117,11 +144,22 @@ public class MainActivity extends Activity {
                     }
 
                     @Override
-                    public void onNext(MovieEntity movieEntity) {
-                        if (movieEntity != null) {
-                            tvTest.setText(TextUtils.isEmpty(movieEntity.getTitle()) ? "" : movieEntity.getTitle());
+                    public void onNext(List<SubjectsEntity> subjectsEntities) {
+                        if (subjectsEntities != null && !subjectsEntities.isEmpty()) {
+                            tvTest.setText(TextUtils.isEmpty(subjectsEntities.get(0).getTitle()) ? "" : subjectsEntities.get(0).getTitle());
                         }
                     }
                 });
+
+    }
+
+    class HttpFunc<T> implements Func1<MovieEntity,List<SubjectsEntity>> {
+        @Override
+        public List<SubjectsEntity> call(MovieEntity movieEntity) {
+            if (movieEntity != null) {
+                return movieEntity.getSubjects();
+            }
+            return null;
+        }
     }
 }
