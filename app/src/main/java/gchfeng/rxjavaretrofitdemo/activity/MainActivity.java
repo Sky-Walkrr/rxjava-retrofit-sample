@@ -17,6 +17,8 @@ import gchfeng.rxjavaretrofitdemo.R;
 import gchfeng.rxjavaretrofitdemo.entity.MovieEntity;
 import gchfeng.rxjavaretrofitdemo.entity.SubjectsEntity;
 import gchfeng.rxjavaretrofitdemo.request.MovieDataService;
+import gchfeng.rxjavaretrofitdemo.subscriber.ProgressSubscriber;
+import gchfeng.rxjavaretrofitdemo.subscriber.SubscribeOnNextListener;
 import gchfeng.rxjavaretrofitdemo.utils.HttpUtil;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -39,11 +41,24 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
+    private SubscribeOnNextListener getTopMovieOnNextListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        getTopMovieOnNextListener = new SubscribeOnNextListener() {
+            @Override
+            public void onNext(Object o) {
+                if (o instanceof MovieEntity) {
+                    MovieEntity movieEntity = (MovieEntity) o;
+                    tvTest.setText(TextUtils.isEmpty(movieEntity.getTitle()) ? "" : movieEntity.getTitle());
+                }
+            }
+        };
+
         initViews();
     }
 
@@ -51,8 +66,8 @@ public class MainActivity extends Activity {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getData();
-//                requestData();
+//                getData();
+                requestData();
             }
         });
     }
@@ -76,7 +91,8 @@ public class MainActivity extends Activity {
                 }
             }
         };
-        HttpUtil.getInstance().getTopMovie(subscriber,0,10);
+//        HttpUtil.getInstance().getTopMovie(subscriber,0,10);
+        HttpUtil.getInstance().getTopMovie(new ProgressSubscriber<MovieEntity>(getTopMovieOnNextListener,this),0,10);
     }
 
     private void getData() {
