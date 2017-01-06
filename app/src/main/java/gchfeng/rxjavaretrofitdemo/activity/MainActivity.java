@@ -2,6 +2,8 @@ package gchfeng.rxjavaretrofitdemo.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,6 +29,8 @@ public class MainActivity extends Activity {
     TextView tvTest;
     @Bind(R.id.btnTest)
     Button btnTest;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +62,15 @@ public class MainActivity extends Activity {
         call.enqueue(new Callback<MovieEntity>() {
             @Override
             public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
-                
+                MovieEntity movieEntity = response.body();
+                if (movieEntity != null) {
+                    tvTest.setText(TextUtils.isEmpty(movieEntity.getTitle()) ? "" : movieEntity.getTitle());
+                }
             }
 
             @Override
             public void onFailure(Call<MovieEntity> call, Throwable t) {
-
+                Log.e(TAG,"requestOnFailure",t);
             }
         });
     }
