@@ -5,11 +5,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gchfeng.rxjavaretrofitdemo.R;
+import gchfeng.rxjavaretrofitdemo.adapter.BaseListAdapter;
 
 /**
  * Created by gchfeng on 2017/1/10.
@@ -21,6 +24,9 @@ public class InstalledApplicationActivity extends Activity {
     RecyclerView recyclerView;
 
     private Context mContext;
+    private BaseListAdapter adapter;
+
+    private List<String> appList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,26 +39,10 @@ public class InstalledApplicationActivity extends Activity {
 
     private void initViews() {
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-
+        adapter = new BaseListAdapter(mContext,appList);
+        recyclerView.setAdapter(adapter);
     }
 
-    class BaseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return null;
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return 0;
-        }
-    }
 
 
 }
