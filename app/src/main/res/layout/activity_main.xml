@@ -16,4 +16,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Request"/>
+
+    <Button
+        android:id="@+id/btnTest2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TryMe"/>
 </LinearLayout>

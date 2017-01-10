@@ -1,6 +1,7 @@
 package gchfeng.rxjavaretrofitdemo.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -38,6 +39,8 @@ public class MainActivity extends Activity {
     TextView tvTest;
     @Bind(R.id.btnTest)
     Button btnTest;
+    @Bind(R.id.btnTest2)
+    Button btnTest2;
 
     private static final String TAG = "MainActivity";
 
@@ -68,6 +71,13 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
 //                getData();
                 requestData();
+            }
+        });
+
+        btnTest2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,InstalledApplicationActivity.class));
             }
         });
     }
