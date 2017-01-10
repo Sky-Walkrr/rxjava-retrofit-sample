@@ -3,6 +3,7 @@ package gchfeng.rxjavaretrofitdemo.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -28,9 +29,14 @@ public class BaseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.dataList = dataList;
     }
 
+    public void setDataList(List<String> dataList) {
+        this.dataList = dataList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(View.inflate(mContext, R.layout.adapter_base_list_item, parent));
+        return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.adapter_base_list_item,parent,false));
     }
 
     @Override
