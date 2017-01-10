@@ -1,27 +1,26 @@
 package gchfeng.rxjavaretrofitdemo.entity;
 
-import java.util.List;
-
 /**
- * Created by gchfeng on 2017/1/5.
+ * Created by walker on 2017/1/6.
  */
 
-public class MovieEntity {
-
-
-    /**
-     * count : 10
-     * start : 0
-     * total : 250
-     * subjects :
-     * title : 豆瓣电影Top250
-     */
-
+public class HttpResult<T> {
     private int count;
     private int start;
     private int total;
     private String title;
-    private List<SubjectsEntity> subjects;
+    private T subjects;
+
+    @Override
+    public String toString() {
+        return "HttpResult{" +
+                "count=" + count +
+                ", start=" + start +
+                ", total=" + total +
+                ", title='" + title + '\'' +
+                ", subjects=" + subjects +
+                '}';
+    }
 
     public int getCount() {
         return count;
@@ -55,11 +54,11 @@ public class MovieEntity {
         this.title = title;
     }
 
-    public List<SubjectsEntity> getSubjects() {
+    public T getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(List<SubjectsEntity> subjects) {
+    public void setSubjects(T subjects) {
         this.subjects = subjects;
     }
 }
