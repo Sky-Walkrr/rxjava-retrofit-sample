@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         call.enqueue(new Callback<MovieEntity>() {
             @Override
             public void onResponse(Call<MovieEntity> call, Response<MovieEntity> response) {
-                
+
             }
 
             @Override
