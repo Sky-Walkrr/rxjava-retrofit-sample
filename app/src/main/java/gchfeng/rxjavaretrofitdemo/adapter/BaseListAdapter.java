@@ -1,6 +1,7 @@
 package gchfeng.rxjavaretrofitdemo.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import gchfeng.rxjavaretrofitdemo.R;
+import gchfeng.rxjavaretrofitdemo.entity.AppInfo;
 
 /**
  * Created by gchfeng on 2017/1/10.
@@ -22,14 +24,14 @@ import gchfeng.rxjavaretrofitdemo.R;
 public class BaseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
-    private List<String> dataList = new ArrayList<>();
+    private List<AppInfo> dataList = new ArrayList<>();
 
-    public BaseListAdapter(Context mContext, List<String> dataList) {
+    public BaseListAdapter(Context mContext, List<AppInfo> dataList) {
         this.mContext = mContext;
         this.dataList = dataList;
     }
 
-    public void setDataList(List<String> dataList) {
+    public void setDataList(List<AppInfo> dataList) {
         this.dataList = dataList;
         notifyDataSetChanged();
     }
@@ -41,10 +43,14 @@ public class BaseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        String name = dataList.get(position);
+        AppInfo info = dataList.get(position);
         if (holder instanceof ViewHolder) {
             ViewHolder viewHolder = (ViewHolder) holder;
-            viewHolder.tvText.setText(TextUtils.isEmpty(name) ? "" : name);
+            viewHolder.tvText.setText(TextUtils.isEmpty(info.getAppName()) ? "" : info.getAppName());
+            Drawable icon = info.getAppIcon();
+            icon.setBounds(0,0,50,50);
+            viewHolder.tvText.setCompoundDrawables(icon,null,null,null);
+            viewHolder.tvText.setCompoundDrawablePadding(20);
         }
     }
 

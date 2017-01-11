@@ -1,6 +1,7 @@
 package gchfeng.rxjavaretrofitdemo.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -35,8 +36,9 @@ public class InstalledApplicationActivity extends Activity {
 
     private Context mContext;
     private BaseListAdapter adapter;
+    private ProgressDialog dialog;
 
-    private List<String> appNameList = new ArrayList<>();
+    private List<AppInfo> appInfoList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class InstalledApplicationActivity extends Activity {
 
     private void initViews() {
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        adapter = new BaseListAdapter(mContext,appNameList);
+        adapter = new BaseListAdapter(mContext,appInfoList);
         recyclerView.setAdapter(adapter);
     }
 
@@ -73,23 +75,43 @@ public class InstalledApplicationActivity extends Activity {
                         return appInfo;
                     }
                 })
+                .takeUntil(new Func1<AppInfo, Boolean>() {
+                    @Override
+                    public Boolean call(AppInfo appInfo) {
+                        return appInfo.getAppName().equals("乐藏");
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<AppInfo>() {
                     @Override
+                    public void onStart() {
+                        super.onStart();
+                        dialog = new ProgressDialog(mContext);
+                        dialog.setMessage("please wait...");
+                        dialog.show();
+                    }
+
+                    @Override
                     public void onCompleted() {
-                        adapter.setDataList(appNameList);
+                        adapter.setDataList(appInfoList);
                         Toast.makeText(mContext, "load info complete~", Toast.LENGTH_SHORT).show();
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e("","onError",e);
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
                     }
 
                     @Override
                     public void onNext(AppInfo appInfo) {
-                        appNameList.add(appInfo.getAppName());
+                        appInfoList.add(appInfo);
                     }
                 });
     }
