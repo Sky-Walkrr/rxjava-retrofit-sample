@@ -65,6 +65,12 @@ public class MainActivity extends Activity {
         initViews();
     }
 
+    public class Presenter {
+        public void onTextChanged(CharSequence s) {
+
+        }
+    }
+
     private void initViews() {
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override

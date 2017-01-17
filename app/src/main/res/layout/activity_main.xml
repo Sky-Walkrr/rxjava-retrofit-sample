@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
+    <data>
+        <variable
+            name="user"
+            type="gchfeng.rxjavaretrofitdemo.entity.User"/>
+    </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -9,19 +15,34 @@
             android:id="@+id/tvTest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="hello,retrofit~"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:text="hello,retrofit~" />
 
         <Button
             android:id="@+id/btnTest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Request"/>
+            android:text="Request" />
 
         <Button
             android:id="@+id/btnTest2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TryMe"/>
+            android:text="TryMe" />
+
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@{user.name}"/>
+
+        <EditText
+            android:id="@+id/etInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:hint="input a name~"
+            android:onTextChanged="@{u}"/>
     </LinearLayout>
 </layout>
