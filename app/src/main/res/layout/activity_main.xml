@@ -5,6 +5,9 @@
         <variable
             name="user"
             type="gchfeng.rxjavaretrofitdemo.entity.User"/>
+        <variable
+            name="presenter"
+            type="gchfeng.rxjavaretrofitdemo.activity.MainActivity.Presenter"/>
     </data>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -35,7 +38,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:text="@{user.name}"/>
+            android:text="@{user.name}"
+            android:onClick="@{()->presenter.textClickListener()}"/>
 
         <EditText
             android:id="@+id/etInput"
@@ -43,6 +47,6 @@
             android:layout_height="wrap_content"
             android:padding="15dp"
             android:hint="input a name~"
-            android:onTextChanged="@{u}"/>
+            android:onTextChanged="@{presenter.onTextChanged}"/>
     </LinearLayout>
 </layout>

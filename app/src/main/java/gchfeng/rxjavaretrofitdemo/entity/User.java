@@ -11,6 +11,10 @@ public class User extends BaseObservable{
     private String name;
     private String lastName;
 
+    public User(String name) {
+        this.name = name;
+    }
+
     public int getAge() {
         return age;
     }

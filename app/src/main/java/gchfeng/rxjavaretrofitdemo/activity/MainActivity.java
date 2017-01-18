@@ -2,6 +2,7 @@ package gchfeng.rxjavaretrofitdemo.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,9 +15,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import gchfeng.rxjavaretrofitdemo.BR;
 import gchfeng.rxjavaretrofitdemo.R;
+import gchfeng.rxjavaretrofitdemo.databinding.ActivityMainBinding;
 import gchfeng.rxjavaretrofitdemo.entity.MovieEntity;
 import gchfeng.rxjavaretrofitdemo.entity.SubjectsEntity;
+import gchfeng.rxjavaretrofitdemo.entity.User;
 import gchfeng.rxjavaretrofitdemo.request.MovieDataService;
 import gchfeng.rxjavaretrofitdemo.subscriber.ProgressSubscriber;
 import gchfeng.rxjavaretrofitdemo.subscriber.SubscribeOnNextListener;
@@ -45,11 +49,15 @@ public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
 
     private SubscribeOnNextListener getTopMovieOnNextListener;
+    private User user =  new User("Walker");
+    private ActivityMainBinding activityMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        activityMainBinding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        activityMainBinding.setUser(user);
+        activityMainBinding.setPresenter(new Presenter());
         ButterKnife.bind(this);
 
         getTopMovieOnNextListener = new SubscribeOnNextListener() {
@@ -66,8 +74,14 @@ public class MainActivity extends Activity {
     }
 
     public class Presenter {
-        public void onTextChanged(CharSequence s) {
+        //方法名跟原名完全一致
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            user.setName(s.toString());
+            activityMainBinding.setVariable(BR.user,user);
+        }
 
+        public void textClickListener() {
+            Toast.makeText(MainActivity.this, user.getName(), Toast.LENGTH_SHORT).show();
         }
     }
 
