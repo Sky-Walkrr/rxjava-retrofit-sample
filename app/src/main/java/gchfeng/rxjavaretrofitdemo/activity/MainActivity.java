@@ -74,13 +74,14 @@ public class MainActivity extends Activity {
     }
 
     public class Presenter {
-        //方法名跟原名完全一致
+        //方法绑定：方法名跟原名完全一致
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             user.setName(s.toString());
             activityMainBinding.setVariable(BR.user,user);
         }
 
-        public void textClickListener() {
+        //监听器绑定
+        public void textClickListener(User user) {
             Toast.makeText(MainActivity.this, user.getName(), Toast.LENGTH_SHORT).show();
         }
     }

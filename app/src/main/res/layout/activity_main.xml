@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:padding="15dp"
             android:text="@{user.name}"
-            android:onClick="@{()->presenter.textClickListener()}"/>
+            android:onClick="@{()->presenter.textClickListener(user)}"/>
 
         <EditText
             android:id="@+id/etInput"

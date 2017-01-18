@@ -7,14 +7,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import gchfeng.rxjavaretrofitdemo.R;
+import gchfeng.rxjavaretrofitdemo.databinding.BaseListAdapterBinding;
 import gchfeng.rxjavaretrofitdemo.entity.AppInfo;
 
 /**
@@ -25,6 +23,7 @@ public class BaseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private Context mContext;
     private List<AppInfo> dataList = new ArrayList<>();
+    private BaseListAdapterBinding baseListAdapterBinding;
 
     public BaseListAdapter(Context mContext, List<AppInfo> dataList) {
         this.mContext = mContext;
@@ -45,12 +44,11 @@ public class BaseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         AppInfo info = dataList.get(position);
         if (holder instanceof ViewHolder) {
-            ViewHolder viewHolder = (ViewHolder) holder;
-            viewHolder.tvText.setText(TextUtils.isEmpty(info.getAppName()) ? "" : info.getAppName());
+            baseListAdapterBinding.tvText.setText(TextUtils.isEmpty(info.getAppName()) ? "" : info.getAppName());
             Drawable icon = info.getAppIcon();
             icon.setBounds(0,0,50,50);
-            viewHolder.tvText.setCompoundDrawables(icon,null,null,null);
-            viewHolder.tvText.setCompoundDrawablePadding(20);
+            baseListAdapterBinding.tvText.setCompoundDrawables(icon,null,null,null);
+            baseListAdapterBinding.tvText.setCompoundDrawablePadding(20);
         }
     }
 
@@ -61,12 +59,10 @@ public class BaseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.tvText)
-        TextView tvText;
-
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            baseListAdapterBinding = BaseListAdapterBinding.bind(itemView);
+
         }
     }
 }
